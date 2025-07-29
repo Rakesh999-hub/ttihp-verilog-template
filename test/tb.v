@@ -4,35 +4,61 @@
 /* This testbench just instantiates the module and makes some convenient wires
    that can be driven / tested by the cocotb test.py.
 */
-module tb ();
 
-  // Dump the signals to a VCD file. You can view it with gtkwave or surfer.
-  initial begin
-    $dumpfile("tb.vcd");
-    $dumpvars(0, tb);
-    #1;
-  end
 
-  // Wire up the inputs and outputs:
-  reg clk;
-  reg rst_n;
-  reg ena;
-  reg [7:0] ui_in;
-  reg [7:0] uio_in;
-  wire [7:0] uo_out;
-  wire [7:0] uio_out;
-  wire [7:0] uio_oe;
+module braunmul_tb;
 
-  // Replace tt_um_example with your module name:
-  tt_um_example user_project (
-      .ui_in  (ui_in),    // Dedicated inputs
-      .uo_out (uo_out),   // Dedicated outputs
-      .uio_in (uio_in),   // IOs: Input path
-      .uio_out(uio_out),  // IOs: Output path
-      .uio_oe (uio_oe),   // IOs: Enable path (active high: 0=input, 1=output)
-      .ena    (ena),      // enable - goes high when design is selected
-      .clk    (clk),      // clock
-      .rst_n  (rst_n)     // not reset
+  reg [7:0] A;
+  reg [7:0] B;
+  wire [15:0] P;
+
+  // DUT: wrapper module for TinyTapeout
+  tt_um_example uut (
+    .ui_in(A),          // A input
+    .uio_in(B),         // B input
+    .uo_out(P[7:0]),    // Lower 8 bits of result
+    .uio_out(P[15:8]),  // Upper 8 bits of result
+    .uio_oe(),          // Not used in test
+    .ena(1'b1),         // Always enabled
+    .clk(1'b0),         // Not used
+    .rst_n(1'b1)        // Not used
   );
 
+  task run_test;
+    input [7:0] a_val;
+    input [7:0] b_val;
+    reg [15:0] expected;
+    begin
+      A = a_val;
+      B = b_val;
+      expected = a_val * b_val;
+
+      #10;
+
+      $display("A = %d (%b), B = %d (%b) => P = %d (%b), Expected = %d", 
+        A, A, B, B, P, P, expected);
+
+      if (P !== expected)
+        $display("❌ Test failed: Got %d, Expected %d", P, expected);
+      else
+        $display("✅ Test passed!");
+    end
+  endtask
+
+  initial begin
+    $display("=== 8x8 Braun Multiplier via tt_um_example ===");
+
+    run_test(8'd0,   8'd0);
+    run_test(8'd1,   8'd1);
+    run_test(8'd15,  8'd13);
+    run_test(8'd255, 8'd1);
+    run_test(8'd255, 8'd255);
+    run_test(8'd128, 8'd2);
+    run_test(8'd10,  8'd20);
+
+    $display("=== All tests completed ===");
+    $finish;
+  end
+
 endmodule
+
