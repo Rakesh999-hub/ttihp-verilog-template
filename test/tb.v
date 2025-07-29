@@ -6,7 +6,7 @@
 */
 
 
-module braunmul_tb;
+module tb;
 
   reg [7:0] A;
   reg [7:0] B;
