@@ -42,8 +42,9 @@ module tb;
     uio_in = 8'd10;
     #20;
 
-    $display("A = %d, B = %d, Output = %d", ui_in, uio_in, {uo_out, uio_out});
-    $finish;
+   $display("A = %d, B = %d, Output = %d", ui_in, uio_in, {uio_out, uo_out});
+
+    // $finish;
   end
 
 endmodule
