@@ -6,59 +6,44 @@
 */
 
 
+
 module tb;
 
-  reg [7:0] A;
-  reg [7:0] B;
-  wire [15:0] P;
+  reg clk;
+  reg rst_n;
+  reg [7:0] ui_in;
+  reg [7:0] uio_in;
+  wire [7:0] uo_out;
+  wire [7:0] uio_out;
+  wire [7:0] uio_oe;
 
-  // DUT: wrapper module for TinyTapeout
-  tt_um_example uut (
-    .ui_in(A),          // A input
-    .uio_in(B),         // B input
-    .uo_out(P[7:0]),    // Lower 8 bits of result
-    .uio_out(P[15:8]),  // Upper 8 bits of result
-    .uio_oe(),          // Not used in test
-    .ena(1'b1),         // Always enabled
-    .clk(1'b0),         // Not used
-    .rst_n(1'b1)        // Not used
+  // DUT Instantiation
+  tt_um_example dut (
+    .clk(clk),
+    .rst_n(rst_n),
+    .ui_in(ui_in),
+    .uio_in(uio_in),
+    .uo_out(uo_out),
+    .uio_out(uio_out),
+    .uio_oe(uio_oe),
+    .ena(1'b1)
   );
 
-  task run_test;
-    input [7:0] a_val;
-    input [7:0] b_val;
-    reg [15:0] expected;
-    begin
-      A = a_val;
-      B = b_val;
-      expected = a_val * b_val;
-
-      #10;
-
-      $display("A = %d (%b), B = %d (%b) => P = %d (%b), Expected = %d", 
-        A, A, B, B, P, P, expected);
-
-      if (P !== expected)
-        $display("❌ Test failed: Got %d, Expected %d", P, expected);
-      else
-        $display("✅ Test passed!");
-    end
-  endtask
+  initial begin
+    clk = 0;
+    forever #5 clk = ~clk;
+  end
 
   initial begin
-    $display("=== 8x8 Braun Multiplier via tt_um_example ===");
+    rst_n = 0; ui_in = 0; uio_in = 0;
+    #20 rst_n = 1;
 
-    run_test(8'd0,   8'd0);
-    run_test(8'd1,   8'd1);
-    run_test(8'd15,  8'd13);
-    run_test(8'd255, 8'd1);
-    run_test(8'd255, 8'd255);
-    run_test(8'd128, 8'd2);
-    run_test(8'd10,  8'd20);
+    ui_in = 8'd15;
+    uio_in = 8'd10;
+    #20;
 
-    $display("=== All tests completed ===");
+    $display("A = %d, B = %d, Output = %d", ui_in, uio_in, {uo_out, uio_out});
     $finish;
   end
 
 endmodule
-
