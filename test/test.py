@@ -2,33 +2,33 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-   import cocotb
-from cocotb.triggers import Timer
-from cocotb.result import TestFailure
+import cocotb
+from cocotb.triggers import RisingEdge
+from cocotb.clock import Clock
 
 @cocotb.test()
 async def test_project(dut):
-    """Test the 8x8 Braun Multiplier via tt_um_example wrapper"""
-    
+    """Test 8x8 Braun Array Multiplier"""
+    cocotb.start_soon(Clock(dut.clk, 10, units="ns").start())
+
+    dut.rst_n.value = 0
+    dut.ui_in.value = 0
+    dut.uio_in.value = 0
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    dut.rst_n.value = 1
+
     A = 15
     B = 10
-
     dut.ui_in.value = A
     dut.uio_in.value = B
 
-    await Timer(10, units="ns")
+    for _ in range(10):
+        await RisingEdge(dut.clk)
 
-    # Read 16-bit product from output (8 lower bits + 8 upper bits)
-    product_low = dut.uo_out.value.integer
-    product_high = dut.uio_out.value.integer
-    result = (product_high << 8) | product_low
-
+    result = (dut.uo_out.value.integer & 0xFF) | ((dut.uio_out.value.integer & 0xFF) << 8)
     expected = A * B
-
-    dut._log.info(f"A={A}, B={B}, Result={result}, Expected={expected}")
-
-    if result != expected:
-        raise TestFailure(f"Output mismatch: got {result}, expected {expected}")
+    assert result == expected, f"Expected {expected}, got {result}"
 
 
     # Keep testing the module by changing the input values, waiting for
