@@ -204,30 +204,27 @@ endmodule
 //top level 
 
 module tt_um_example (
-    input  wire [7:0] ui_in,     // A input
-    output wire [7:0] uo_out,    // P[7:0]
-    input  wire [7:0] uio_in,    // B input
-    output wire [7:0] uio_out,   // P[15:8]
-    output wire [7:0] uio_oe,    // Output enable
-    input  wire       ena,       // Power enable (can ignore)
-    input  wire       clk,       // Clock (REQUIRED for test.py)
-    input  wire       rst_n      // Reset_n (REQUIRED for test.py)
+  input clk,
+  input rst_n,
+  input  [7:0] ui_in,
+  input  [7:0] uio_in,
+  output [7:0] uo_out,
+  output [7:0] uio_out,
+  output [7:0] uio_oe,
+  input ena
 );
 
-    wire [15:0] P;
+  wire [15:0] P;
 
-    braunmul uut (
-        .A(ui_in),
-        .B(uio_in),
-        .P(P)
-    );
+  braunmul u_braun (
+    .A(ui_in),
+    .B(uio_in),
+    .P(P)
+  );
 
-    assign uo_out  = P[7:0];
-    assign uio_out = P[15:8];
-    assign uio_oe  = 8'hFF;  // Mark outputs as driven
-
-    // Prevent unused signal warnings
-    wire _unused = &{ena, clk, rst_n, 1'b0};
+  assign uo_out  = P[7:0];
+  assign uio_out = P[15:8];
+  assign uio_oe  = 8'hFF;
 
 endmodule
 
