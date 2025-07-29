@@ -4,6 +4,7 @@ project:
 project:
   title: "8x8 Braun Multiplier"
   author: "Rakesh Somayajula"
+  language: "verilog"
   description: "A basic implementation of an unsigned 8x8 Braun array multiplier using structural Verilog."
   tiles: "1x1"
   top_module: "tt_um_example"
