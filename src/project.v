@@ -5,15 +5,14 @@ module tt_um_example (
     output wire [7:0] uo_out,    // P[7:0]
     input  wire [7:0] uio_in,    // B input
     output wire [7:0] uio_out,   // P[15:8]
-    output wire [7:0] uio_oe,    // Set to output
-    input  wire       ena,
-    input  wire       clk,
-    input  wire       rst_n
+    output wire [7:0] uio_oe,    // Output enable
+    input  wire       ena,       // Power enable (can ignore)
+    input  wire       clk,       // Clock (REQUIRED for test.py)
+    input  wire       rst_n      // Reset_n (REQUIRED for test.py)
 );
 
     wire [15:0] P;
 
-    // Instantiate your 8x8 Braun multiplier
     braunmul uut (
         .A(ui_in),
         .B(uio_in),
@@ -22,12 +21,14 @@ module tt_um_example (
 
     assign uo_out  = P[7:0];
     assign uio_out = P[15:8];
-    assign uio_oe  = 8'hFF;
+    assign uio_oe  = 8'hFF;  // Mark outputs as driven
 
-  wire _unused = &{ena, clk, rst_n, 1'b0};
+    // Prevent unused signal warnings
+    wire _unused = &{ena, clk, rst_n, 1'b0};
 
 endmodule
 
+  
 // braun array multiplier
 
 module braunmul (
