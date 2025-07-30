@@ -1,42 +1,81 @@
-![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
+# Braun Array Multiplier – TinyTapeout Submission
 
-# Tiny Tapeout Verilog Project Template
+![GDS Layout](https://rakesh999-hub.github.io/ttihp-verilog-template/tt.gds.png)
 
-- [Read the documentation for project](docs/info.md)
+This project implements an **8-bit × 8-bit Braun Array Multiplier** using Verilog. It is designed and tested for submission through the [TinyTapeout](https://tinytapeout.com/) flow and is fully open-source.
 
-## What is Tiny Tapeout?
+---
 
-Tiny Tapeout is an educational project that aims to make it easier and cheaper than ever to get your digital and analog designs manufactured on a real chip.
+## 🧠 Overview
 
-To learn more and get started, visit https://tinytapeout.com.
+The Braun multiplier is a combinational circuit that performs unsigned binary multiplication using a structured array of full and half adders. It takes two 8-bit inputs and generates a 16-bit product.
 
-## Set up your Verilog project
+- **Inputs**: `A` (8-bit), `B` (8-bit)
+- **Output**: `P` (16-bit product)
+- **Implemented in**: `braunmul.v`
+- **Top module**: `tt_um_example.v`
 
-1. Add your Verilog files to the `src` folder.
-2. Edit the [info.yaml](info.yaml) and update information about your project, paying special attention to the `source_files` and `top_module` properties. If you are upgrading an existing Tiny Tapeout project, check out our [online info.yaml migration tool](https://tinytapeout.github.io/tt-yaml-upgrade-tool/).
-3. Edit [docs/info.md](docs/info.md) and add a description of your project.
-4. Adapt the testbench to your design. See [test/README.md](test/README.md) for more information.
+---
 
-The GitHub action will automatically build the ASIC files using [OpenLane](https://www.zerotoasiccourse.com/terminology/openlane/).
+## 🚀 How it works
 
-## Enable GitHub actions to build the results page
+This design uses:
+- A regular array of **AND gates** to generate partial products
+- An array of **full and half adders** to compute the final result
+- Inputs are provided via `ui_in` and `uio_in`
+- Output is split across `uo_out` and `uio_out`
 
-- [Enabling GitHub Pages](https://tinytapeout.com/faq/#my-github-action-is-failing-on-the-pages-part)
+The core logic is defined in the `braunmul.v` module and wrapped for TinyTapeout in `tt_um_example.v`.
 
-## Resources
+---
 
-- [FAQ](https://tinytapeout.com/faq/)
-- [Digital design lessons](https://tinytapeout.com/digital_design/)
-- [Learn how semiconductors work](https://tinytapeout.com/siliwiz/)
-- [Join the community](https://tinytapeout.com/discord)
-- [Build your design locally](https://www.tinytapeout.com/guides/local-hardening/)
+## ✅ Test Status
 
-## What next?
+- ✅ **Simulation passed** using Cocotb
+- ✅ **GDS generated** successfully
+- ✅ **Documentation** and info.yaml configured
+- ✅ **Live GitHub Pages deployed**
 
-- [Submit your design to the next shuttle](https://app.tinytapeout.com/).
-- Edit [this README](README.md) and explain your design, how it works, and how to test it.
-- Share your project on your social network of choice:
-  - LinkedIn [#tinytapeout](https://www.linkedin.com/search/results/content/?keywords=%23tinytapeout) [@TinyTapeout](https://www.linkedin.com/company/100708654/)
-  - Mastodon [#tinytapeout](https://chaos.social/tags/tinytapeout) [@matthewvenn](https://chaos.social/@matthewvenn)
-  - X (formerly Twitter) [#tinytapeout](https://twitter.com/hashtag/tinytapeout) [@tinytapeout](https://twitter.com/tinytapeout)
-// Trigger CI
+🔗 View test output and logs:  
+[GitHub Actions Runs](https://github.com/Rakesh999-hub/ttihp-verilog-template/actions)
+
+---
+
+## 📦 Files
+
+| File                  | Description                                  |
+|-----------------------|----------------------------------------------|
+| `braunmul.v`          | Main multiplier logic                        |
+| `tt_um_example.v`     | Top-level wrapper for TinyTapeout            |
+| `test/test_project.py`| Cocotb testbench for simulation              |
+| `info.yaml`           | Metadata required by TinyTapeout             |
+| `docs/info.md`        | Datasheet details for GitHub Pages           |
+| `runs/`               | GDS, render, test logs, etc.                 |
+
+---
+
+## 🖼️ Rendered Layout
+
+You can view the GDS render [here (PNG)](https://rakesh999-hub.github.io/ttihp-verilog-template/tt.gds.png)
+
+---
+
+## 🔗 Useful Links
+
+- [🧠 GitHub Pages site](https://rakesh999-hub.github.io/ttihp-verilog-template/)
+- [📦 GitHub Repository](https://github.com/Rakesh999-hub/ttihp-verilog-template)
+- [💡 TinyTapeout Docs](https://tinytapeout.com/)
+
+---
+
+## 👨‍💻 Author
+
+**Rakesh Somayajula**  
+Submitted as part of the open-source TinyTapeout project.  
+Feel free to fork, clone, and learn!
+
+---
+
+## 📜 License
+
+This project is open-source under the MIT License.
